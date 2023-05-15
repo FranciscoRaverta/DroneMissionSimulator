@@ -11,16 +11,19 @@ public class TreeInstantiator : Task<Void, TreeInstantiationResult> {
     private readonly GameObject treeContainer;
     private int createdTrees;
 
+    private bool includeTerrainTrees;
 
-    public TreeInstantiator(Terrain terrain, int areaWidth, int areaDistance) {
+    public TreeInstantiator(Terrain terrain, int areaWidth, int areaDistance, bool includeTerrainTrees) {
         this.terrain = terrain;
         this.bounds = CalculateBounds(terrain, areaWidth, areaDistance);
         this.treeContainer = FindOrCreateTreeContainer();
         this.createdTrees = 0;
+        this.includeTerrainTrees = includeTerrainTrees;
+
     }
 
     public override string GetDescription() {
-        return "Copying trees outside of the terrain...";
+        return "Converting trees from the terrain to objects...";
     }
 
     public override void TakeInput(Void input) { }
@@ -30,7 +33,9 @@ public class TreeInstantiator : Task<Void, TreeInstantiationResult> {
         float width = data.size.x;
         float distance = data.size.z;
         float altitude = data.size.y;
-
+        
+        if (data.treeInstanceCount == 0 || includeTerrainTrees == false) { Debug.Log("There are no trees in the terrain."); return 1; }
+        
         // Create trees
         for (int treesInStep = 0; treesInStep < TREES_PER_STEP && createdTrees < data.treeInstanceCount; treesInStep++, createdTrees++) {
             TreeInstance tree = data.treeInstances[createdTrees];
@@ -45,17 +50,20 @@ public class TreeInstantiator : Task<Void, TreeInstantiationResult> {
             Bounds treeBounds = new Bounds(position, scale);
             if (bounds.Intersects(treeBounds)) {
                 GameObject go = Object.Instantiate(_tree, position, Quaternion.Euler(0f, Mathf.Rad2Deg * tree.rotation, 0f), treeContainer.transform) as GameObject;
-                go.name = "Tree_" + createdTrees;
-                RemoveUnnecessaryChildren(go);
-                go.transform.localScale = scale;
+                go.name = "Tree " + createdTrees;
+                //RemoveUnnecessaryChildren(go);
+                Vector3 aux = Vector3.Scale(go.transform.localScale, scale);
+                go.transform.localScale = aux;
                 go.isStatic = true;
             }
+
+
         }
 
         if (createdTrees == data.treeInstanceCount) {
             AddMeshCollidersToTrees();
         }
-
+        
         return createdTrees / (float) data.treeInstanceCount;
     }
 

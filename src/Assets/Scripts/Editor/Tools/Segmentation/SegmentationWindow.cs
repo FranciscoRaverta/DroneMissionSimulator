@@ -7,6 +7,7 @@ public class SegmentationWindow : TerrainToolWindow {
 
     private float GSD = 20;
     private int areaWidth = 200, areaDistance = 200;
+    private bool includeTerrainTrees = true;
     private Color noHitColor;
     private Dictionary<EntityType, Color> colors = new Dictionary<EntityType, Color> {
         { EntityType.TERRAIN, new Color(174 / 255f, 144 / 255f, 107 / 255f) },
@@ -37,7 +38,7 @@ public class SegmentationWindow : TerrainToolWindow {
     }
 
     protected override TaskList GetTaskList(Terrain terrain, string folderPath) {
-        return TaskList.From(new TreeInstantiator(terrain, areaDistance, areaDistance))
+        return TaskList.From(new TreeInstantiator(terrain, areaDistance, areaDistance, includeTerrainTrees))
             .With(new Raycaster(GSD))
             .With(new Segmentation(colors, noHitColor, GSD, exportArrayInXML, folderPath));
     }

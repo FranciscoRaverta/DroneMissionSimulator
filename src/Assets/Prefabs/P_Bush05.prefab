@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 9114443567867604886}
   m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9114443567867114430}
@@ -132,7 +132,7 @@ Transform:
   m_GameObject: {fileID: 9114443567867604888}
   m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9114443567867114430}
@@ -236,7 +236,7 @@ Transform:
   m_GameObject: {fileID: 9114443567867604890}
   m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9114443567867114430}
@@ -340,7 +340,7 @@ Transform:
   m_GameObject: {fileID: 9114443567867604892}
   m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9114443567867114430}
@@ -442,7 +442,7 @@ Transform:
   m_GameObject: {fileID: 9114443567867604894}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9114443567867114428}
@@ -466,19 +466,19 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.035609365
+  - screenRelativeHeight: 0.0013706322
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 9114443567869538654}
-  - screenRelativeHeight: 0.026577577
+  - screenRelativeHeight: 0.0013706322
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 9114443567869538652}
-  - screenRelativeHeight: 0.017819481
+  - screenRelativeHeight: 0.0013706322
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 9114443567869538650}
-  - screenRelativeHeight: 0.01
+  - screenRelativeHeight: 0.0013706322
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 9114443567869538648}

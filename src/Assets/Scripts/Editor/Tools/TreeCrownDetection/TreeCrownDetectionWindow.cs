@@ -5,6 +5,7 @@ public class TreeCrownDetectionWindow : TerrainToolWindow {
 
     private float GSD = 20;
     private int areaWidth = 200, areaDistance = 200;
+    private bool includeTerrainTrees = true;
 
     [MenuItem("Window/Terrain Tools/Tree Crown Detection")]
     static void Init() {
@@ -22,7 +23,7 @@ public class TreeCrownDetectionWindow : TerrainToolWindow {
     }
 
     protected override TaskList GetTaskList(Terrain terrain, string folderPath) {
-        return TaskList.From(new TreeInstantiator(terrain, areaDistance, areaDistance))
+        return TaskList.From(new TreeInstantiator(terrain, areaDistance, areaDistance, includeTerrainTrees))
             .With(new Raycaster(GSD))
             .With(new TreeCrownDetection())
             .With(new TreeCrownDrawing(folderPath));
