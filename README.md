@@ -13,7 +13,7 @@ The project has three possible outputs:
 The project doesn't have a binary or something like that yet. We only provide the Unity project so you can run it by yourself. 
 To run the simulator, you will have to:
 1. Download [Unity Hub](https://store.unity.com/download?ref=personal)
-2. Download a version of the Unity Editor (the project was built with the version 2019.1.5)
+2. Download a version of the Unity Editor (the project was built with the version 2019.3.4f1)
 3. Clone or download this repo
 4. Go to the folder `Assets > Scenes`, choose any of the folders and open the scene file (file with`.unity` extension).
 
