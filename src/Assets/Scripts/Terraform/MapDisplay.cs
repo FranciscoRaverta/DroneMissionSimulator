@@ -4,13 +4,34 @@ using UnityEngine;
 
 public class MapDisplay : MonoBehaviour
 {
-    public Renderer textureRender;
-    public MeshFilter meshFilter;
-    public MeshRenderer meshRenderer;
+    [SerializeField] GameObject terrain;
+    [SerializeField] MeshFilter meshFilter;
+    [SerializeField] MeshRenderer meshRenderer;
+    [SerializeField] Material material;
+
+    private void Create() {
+        GameObject go = new GameObject("Terrain");
+        go.transform.position = Vector3.zero;
+
+        meshFilter = go.AddComponent<MeshFilter>();
+        meshRenderer = go.AddComponent<MeshRenderer>();
+        if (!material) {
+            material = new Material(Shader.Find("Standard"));
+        }
+        meshRenderer.sharedMaterial = material;
+        terrain = go;
+    }
+
+    public void Draw(MeshData meshData, Texture2D texture) {
+        if (!terrain) {
+            Create();
+        }
+        DrawMesh(meshData, texture);
+    }
 
     public void DrawTexture(Texture2D texture) {
-        textureRender.sharedMaterial.mainTexture = texture;
-        textureRender.transform.localScale = new Vector3(texture.width, 1, texture.height);
+        meshRenderer.sharedMaterial.mainTexture = texture;
+        meshRenderer.transform.localScale = new Vector3(texture.width, 1, texture.height);
     }
 
     public void DrawMesh(MeshData meshData, Texture2D texture) {
