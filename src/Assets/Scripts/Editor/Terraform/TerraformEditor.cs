@@ -1,111 +1,111 @@
 using UnityEngine;
 using UnityEditor;
-//using EditorGUITable;
 
-[CustomEditor(typeof(MapGenerator))]
+[CustomEditor(typeof(Terraformer))]
 [CanEditMultipleObjects]
 
-public class MapGeneratorEditor : Editor
-{
+public class TerraformerEditor : Editor {
+    Terraformer terraformer;
+
+    // General
+    SerializedProperty terrain;
+    SerializedProperty terrainMaterial;
+    SerializedProperty size;
+    SerializedProperty previewMode;
+    SerializedProperty autoUpdate;
 
     // Land properties
-    SerializedProperty mapWidth;
-    SerializedProperty mapHeight;
-    SerializedProperty octaves;
-    SerializedProperty lacunarity;
-    SerializedProperty noiseScale;
-    SerializedProperty heightMultiplicationFactor;
-    SerializedProperty heightDampeningFactor;
-    SerializedProperty offset;
-    SerializedProperty seed;
-    SerializedProperty regions;
+    SerializedProperty noiseDataLand;
+    SerializedProperty heightMultiplier;
+    SerializedProperty heightCurve;
 
-    // Vegetation properties
-    SerializedProperty trees;
-    SerializedProperty treeSpacing;
+    // Tree properties
+    SerializedProperty noiseDataFertility;
+    SerializedProperty fertilityData;
+    SerializedProperty treeData;
 
-    // Private properties
-    private Color[] colorMap;
-    private float[,] noiseMap;
-
-    // Showing foldouts
-    bool showLand = false;
-    bool showVeg = false;
+    // Data editors
+    Editor noiseDataLandEditor;
+    Editor noiseDataFertilityEditor;
+    Editor fertilityZonesEditor;
 
 
-    void OnEnable()
-    {
-        mapWidth = serializedObject.FindProperty("mapWidth");
-        mapHeight = serializedObject.FindProperty("mapHeight");
-        octaves = serializedObject.FindProperty("octaves");
-        noiseScale = serializedObject.FindProperty("noiseScale");
-        lacunarity = serializedObject.FindProperty("lacunarity");
-        heightMultiplicationFactor = serializedObject.FindProperty("heightMultiplicationFactor");
-        heightDampeningFactor = serializedObject.FindProperty("heightDampeningFactor");
-        offset = serializedObject.FindProperty("offset");
-        seed = serializedObject.FindProperty("seed");
-        regions = serializedObject.FindProperty("regions");
-        trees = serializedObject.FindProperty("trees");
-        treeSpacing = serializedObject.FindProperty("treeSpacing");
+    void OnEnable() {
+        terraformer = (Terraformer)target;
+
+        // General
+        terrain = serializedObject.FindProperty("terrain");
+        terrainMaterial = serializedObject.FindProperty("terrainMaterial");
+        size = serializedObject.FindProperty("size");
+        previewMode = serializedObject.FindProperty("previewMode");
+        autoUpdate = serializedObject.FindProperty("autoUpdate");
+
+        // Land
+        noiseDataLand = serializedObject.FindProperty("noiseDataLand");
+        noiseDataFertility = serializedObject.FindProperty("noiseDataFertility");
+        fertilityData = serializedObject.FindProperty("fertilityData");
+        heightMultiplier = serializedObject.FindProperty("heightMultiplier");
+        heightCurve = serializedObject.FindProperty("heightCurve");
+
+        // Trees
+        treeData = serializedObject.FindProperty("treeData");
     }
-    Vector2 scrollPos;
-    public override void OnInspectorGUI()
-    {
+    public override void OnInspectorGUI() {
+        GUIStyle richTextStyle = new GUIStyle();
+        richTextStyle.richText = true;
         serializedObject.Update();
 
-        MapGenerator mapGen = (MapGenerator) target;
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        EditorGUILayout.LabelField("<color=#d85d5d><b>General</b></color>", richTextStyle);
+        EditorGUILayout.PropertyField(terrain, new GUIContent("Object"));
+        EditorGUILayout.PropertyField(terrainMaterial, new GUIContent("Material"));
+        EditorGUILayout.PropertyField(size);
+        EditorGUILayout.PropertyField(previewMode);
+        EditorGUILayout.PropertyField(autoUpdate);
 
-        Rect r = EditorGUILayout.BeginVertical();
-        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Width(r.width), GUILayout.Height(r.height));
-        EditorGUI.indentLevel++;
-
-
-        showLand = EditorGUILayout.Foldout(showLand, "Land");
-        if (showLand)
-        {
-            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-            GUILayout.Label("Set vertices for mesh", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(mapWidth);
-            EditorGUILayout.PropertyField(mapHeight);
-            GUILayout.Label("Perlin noise properties", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(octaves);
-            EditorGUILayout.PropertyField(lacunarity);
-            EditorGUILayout.PropertyField(noiseScale);
-            EditorGUILayout.PropertyField(heightMultiplicationFactor);
-            EditorGUILayout.PropertyField(heightDampeningFactor);
-            EditorGUILayout.PropertyField(offset);
-            EditorGUILayout.PropertyField(seed);
-            EditorGUILayout.PropertyField(regions);
-            if (GUILayout.Button("Generate land"))
-            {
-                mapGen.GenerateMap();
-            }
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        EditorGUILayout.LabelField("<color=lime><b>Terrain</b></color>", richTextStyle);
+        EditorGUILayout.PropertyField(noiseDataLand, new GUIContent("Noise Data"));
+        EditorGUILayout.PropertyField(heightMultiplier);
+        EditorGUILayout.PropertyField(heightCurve);
+        if (GUILayout.Button("Generate terrain")) {
+            terraformer.GenerateLand();
         }
 
-        showVeg = EditorGUILayout.Foldout(showVeg, "Vegetation");
-        if (showVeg) {
-            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-            GUILayout.Label("Tree properties", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(trees);
-            EditorGUILayout.PropertyField(treeSpacing);
-            if (GUILayout.Button("Generate trees")) {
-                mapGen.GenerateTrees();
-            }
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        EditorGUILayout.LabelField("<color=lime><b>Fertility</b></color>", richTextStyle);
+        EditorGUILayout.PropertyField(noiseDataFertility, new GUIContent("Noise Data"));
+        EditorGUILayout.PropertyField(fertilityData, new GUIContent("Fertility Data"));
+        EditorGUILayout.PropertyField(treeData, new GUIContent("Tree Data"));
+        if (GUILayout.Button("Plant trees")) {
+            terraformer.GenerateTrees();
         }
-
-        EditorGUILayout.EndScrollView();
-        EditorGUILayout.EndVertical();
 
         serializedObject.ApplyModifiedProperties();
+
+        // Draw editor for data assets. We also want to autoupdate when values change.
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        EditorGUILayout.LabelField("<color=orange><b>Data</b></color>", richTextStyle);
+        DrawDataEditor(terraformer.noiseDataLand, terraformer.OnNoiseDataLandUpdated, ref terraformer.noiseDataLandFoldout, ref noiseDataLandEditor);
+        DrawDataEditor(terraformer.noiseDataFertility, terraformer.OnNoiseDataFertilityUpdated, ref terraformer.noiseDataFertilityFoldout, ref noiseDataFertilityEditor);
+        DrawDataEditor(terraformer.fertilityData, terraformer.OnFertilityUpdated, ref terraformer.fertilityDataFoldout, ref fertilityZonesEditor);
     }
 
-    // Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    void DrawDataEditor(Object data, System.Action onDataUpdated, ref bool foldout, ref Editor editor) {
+        if (data != null) {
+            foldout = EditorGUILayout.InspectorTitlebar(foldout, data);
+
+            using (var check = new EditorGUI.ChangeCheckScope()) {
+                if (foldout) {
+                    CreateCachedEditor(data, null, ref editor);
+                    editor.OnInspectorGUI();
+                    if (check.changed) {
+                        if (onDataUpdated != null) {
+                            onDataUpdated();
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
