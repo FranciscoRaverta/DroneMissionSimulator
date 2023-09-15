@@ -12,8 +12,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c73f538bf3507c74081667ec6b27e364, type: 3}
   m_Name: Fertility soil
   m_EditorClassIdentifier: 
-  soilTypes:
-  - zone: {x: 0, y: 0.47008294}
-    spawnProbability: 0
-  - zone: {x: 0.25, y: 1}
-    spawnProbability: 0
+  fertility:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.029121399
+      value: 0.262146
+      inSlope: 1.9806328
+      outSlope: 1.9806328
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.38260004
+      value: 0.9622574
+      inSlope: Infinity
+      outSlope: Infinity
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.48000747
+      value: 0.0004993379
+      inSlope: Infinity
+      outSlope: Infinity
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.72161657
+      value: 0.95992565
+      inSlope: Infinity
+      outSlope: Infinity
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.14395379
+      outSlope: 0.14395379
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  tree: {fileID: 40587555148541973, guid: 54c281735da429c9a8d7a35930b5d5d2, type: 3}

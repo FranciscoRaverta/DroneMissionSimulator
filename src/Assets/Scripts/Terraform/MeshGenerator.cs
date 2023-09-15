@@ -30,17 +30,6 @@ public class MeshGenerator {
 
         return meshData;
     }
-
-    public static GameObject Create(Material material) {
-        GameObject go = new GameObject("Terrain");
-        go.transform.position = Vector3.zero;
-
-        go.AddComponent<MeshFilter>();
-        MeshRenderer mr;
-        mr = go.AddComponent<MeshRenderer>();
-        mr.sharedMaterial = material;
-        return go;
-    }
 }
 
 public class MeshData {

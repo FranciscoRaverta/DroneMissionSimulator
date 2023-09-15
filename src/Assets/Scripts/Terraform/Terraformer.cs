@@ -8,91 +8,97 @@ public class Terraformer : MonoBehaviour
     public Preview preview = Preview.None;
 
     // General properties
-    public GameObject terrain;
     public Material terrainMaterial;
     public int size = 256;
     public Preview previewMode;
     public bool autoUpdate;
 
     // Land properties
-    public NoiseData noiseDataLand;
-    public float heightMultiplier;
-    public AnimationCurve heightCurve = AnimationCurve.Constant(0, 1, 1);
+    public NoiseData terrainNoiseData;
+    public CustomTerrainData terrainData;
 
     // Vegetation properties
     public NoiseData noiseDataFertility;
     public FertilityData fertilityData;
     public TreeData treeData;
 
+    // State
+    [System.NonSerialized] private bool initialized = false;
+
     // Private properties
-    private float[,] heightMap;
-    private float[,] vegetationProbabilityMap;
+    private CustomTerrain customTerrain;
+    private Fertility fertility;
     [HideInInspector] public bool noiseDataLandFoldout;
     [HideInInspector] public bool noiseDataFertilityFoldout;
     [HideInInspector] public bool fertilityDataFoldout;
+    [HideInInspector] public bool terrainDataFoldout;
 
-    // Debug gizmos
-    private List<Vector2> spawnPointsGizmos;
-
-    public void GenerateLand() {
-        if (terrain == null) {
-            terrain = MeshGenerator.Create(terrainMaterial);
+    public void Initialize() {
+        if (!initialized) {
+            Debug.Log("Initializing");
+            customTerrain = new CustomTerrain(size, terrainMaterial, terrainData, terrainNoiseData);
+            fertility = new Fertility(size, noiseDataFertility, fertilityData);
+            initialized = true;
         }
-        MeshFilter mf = terrain.GetComponent<MeshFilter>();
-        heightMap = Noise.GenerateNoiseMap(size, noiseDataLand.seed, noiseDataLand.scale, noiseDataLand.octaves, noiseDataLand.persistance, noiseDataLand.lacunarity, noiseDataLand.offset);
-        mf.sharedMesh = MeshGenerator.GenerateTerrainMesh(heightMap, heightMultiplier, heightCurve).CreateMesh();
+
     }
 
     public void GenerateTrees() {
-        vegetationProbabilityMap = Noise.GenerateNoiseMap(size, noiseDataFertility.seed, noiseDataFertility.scale, noiseDataFertility.octaves, noiseDataFertility.persistance, noiseDataFertility.lacunarity, noiseDataFertility.offset);
-        Vector2 domain = new Vector2(size, size);
-        List<Vector2> spawnPoints = PoissonDiskSampling.GeneratePoints(50, domain);
-        spawnPointsGizmos = spawnPoints;
-        Fertility.PlantTrees(terrain, spawnPoints, fertilityData.tree);
+        if (initialized) {
+            fertility.SetData(noiseDataFertility);
+            fertility.SetData(fertilityData);
+            Vector2 domain = new Vector2(size, size);
+            List<Vector2> spawnPoints = PoissonDiskSampling.GeneratePoints(10, domain);
+            fertility.PlantTrees(customTerrain, spawnPoints);
+        }
+
+    }
+
+    public void GenerateTerrain() {
+        if (initialized) {
+            customTerrain.SetData(terrainNoiseData);
+            customTerrain.SetData(terrainData);
+            customTerrain.UpdateTerrain();
+        }
     }
 
     public void OnNoiseDataLandUpdated() {
         if (autoUpdate) {
-            GenerateLand();
+            GenerateTerrain();
         }
     }
     public void OnNoiseDataFertilityUpdated() {
-        if (autoUpdate) {
-            GenerateTrees();
+        if (autoUpdate && initialized) {
+            fertility.SetData(noiseDataFertility);
+            fertility.SetData(fertilityData);
             DrawPreview();
         }
     }
     public void OnFertilityUpdated() { 
-        if (autoUpdate) {
+        if (autoUpdate && initialized) {
+            fertility.SetData(noiseDataFertility);
+            fertility.SetData(fertilityData);
             DrawPreview();
         }
     }
 
     public void DrawPreview() {
-        if (previewMode == Preview.Height) {
-            terrainMaterial.mainTexture = TextureGenerator.TextureFromHeightMap(heightMap);
-        } else if (previewMode == Preview.Vegetation) {
-            terrainMaterial.mainTexture = TextureGenerator.TextureFromHeightMap(vegetationProbabilityMap);
-        } else if (previewMode == Preview.Fertility) {
-            terrainMaterial.mainTexture = TextureGenerator.TextureFromColorMap(Fertility.GenerateFertilityColorMap(size, vegetationProbabilityMap, fertilityData), size, size);
-        } else { 
-            terrainMaterial.mainTexture = null;
+        if (initialized) {
+            if (previewMode == Preview.Height) {
+                terrainMaterial.mainTexture = TextureGenerator.TextureFromHeightMap(customTerrain.TerrainHeightMap);
+            } else if (previewMode == Preview.Vegetation) {
+                terrainMaterial.mainTexture = TextureGenerator.TextureFromHeightMap(fertility.ProbabilityMap);
+            } else if (previewMode == Preview.Fertility) {
+                terrainMaterial.mainTexture = TextureGenerator.TextureFromColorMap(fertility.GenerateFertilityColorMap(), size, size);
+            } else {
+                terrainMaterial.mainTexture = null;
+            }
         }
     }
 
     private void OnValidate() {
         if (autoUpdate) {
-            GenerateLand();
-            GenerateTrees();
             DrawPreview();
-        }
-    }
-
-    private void OnDrawGizmos() {
-        foreach (Vector2 p in spawnPointsGizmos) {
-            Vector3 worldPos = new Vector3(p.x, 5, p.y);
-            Gizmos.DrawSphere(worldPos, 2);
-            Gizmos.DrawWireSphere(worldPos, 50);
         }
     }
 }

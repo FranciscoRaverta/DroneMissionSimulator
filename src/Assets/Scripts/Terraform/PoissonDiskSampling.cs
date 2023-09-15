@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class PoissonDiskSampling
-{
+public static class PoissonDiskSampling {
     public static List<Vector2> GeneratePoints(float radius, Vector2 domain, int k = 30) {
         // Step 0. Initialize data structures.
         float cellSize = radius / Mathf.Sqrt(2);
@@ -22,32 +21,37 @@ public static class PoissonDiskSampling
         active.Add(x0);
 
         while (active.Count > 0) {
-            int spawnIndex = Random.Range(0, active.Count);
-            Vector2 spawnCenter = active[spawnIndex];
-            bool candidateFound = false;
+            int index = Random.Range(0, active.Count);
+            Vector2 center = active[index];
+            bool found = false;
 
             for (int i = 0; i < k; i++) {
                 // Step 2: Generate up to k points chosen uniformly from the spherical annulus
                 // between radius r and 2r around x_i. In this case x_i is the spawn center.
                 // Find a suitable candidate or discard the active point as a suitable generator.
-                float angle = Random.value * Mathf.PI * 2;
-                Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-                Vector2 candidate = spawnCenter + dir * Random.Range(radius, 2 * radius);
-                if (IsValidPoint(candidate, domain, cellSize, radius, grid)) {
-                    points.Add(candidate);
-                    active.Add(candidate);
-                    grid[(int)(candidate.x / cellSize), (int)(candidate.y / cellSize)] = candidate;
-                    candidateFound = true;
+                Vector2 xi = GetRandomPointInAnnulus(center, radius);
+                if (IsValidPoint(xi, domain, cellSize, radius, grid)) {
+                    points.Add(xi);
+                    active.Add(xi);
+                    grid[(int)(xi.x / cellSize), (int)(xi.y / cellSize)] = xi;
+                    found = true;
                     break;
                 }
             }
 
-            if (!candidateFound) {
-                active.RemoveAt(spawnIndex);
+            if (!found) {
+                active.RemoveAt(index);
             }
         }
 
         return points;
+    }
+
+    static Vector2 GetRandomPointInAnnulus(Vector2 center, float radius) {
+        float angle = Random.value * Mathf.PI * 2;
+        Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+        Vector2 point = center + dir * Random.Range(radius, 2 * radius);
+        return point;
     }
 
     static bool IsValidPoint(Vector2 candidate, Vector2 domain, float cellSize, float radius, Vector2[,] grid) {

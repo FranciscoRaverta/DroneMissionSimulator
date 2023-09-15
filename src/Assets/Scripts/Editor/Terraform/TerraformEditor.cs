@@ -16,8 +16,7 @@ public class TerraformerEditor : Editor {
 
     // Land properties
     SerializedProperty noiseDataLand;
-    SerializedProperty heightMultiplier;
-    SerializedProperty heightCurve;
+    SerializedProperty terrainData;
 
     // Tree properties
     SerializedProperty noiseDataFertility;
@@ -25,6 +24,7 @@ public class TerraformerEditor : Editor {
     SerializedProperty treeData;
 
     // Data editors
+    Editor terrainDataEditor;
     Editor noiseDataLandEditor;
     Editor noiseDataFertilityEditor;
     Editor fertilityZonesEditor;
@@ -32,7 +32,7 @@ public class TerraformerEditor : Editor {
 
     void OnEnable() {
         terraformer = (Terraformer)target;
-
+        terraformer.Initialize();
         // General
         terrain = serializedObject.FindProperty("terrain");
         terrainMaterial = serializedObject.FindProperty("terrainMaterial");
@@ -41,11 +41,10 @@ public class TerraformerEditor : Editor {
         autoUpdate = serializedObject.FindProperty("autoUpdate");
 
         // Land
-        noiseDataLand = serializedObject.FindProperty("noiseDataLand");
+        noiseDataLand = serializedObject.FindProperty("terrainNoiseData");
         noiseDataFertility = serializedObject.FindProperty("noiseDataFertility");
         fertilityData = serializedObject.FindProperty("fertilityData");
-        heightMultiplier = serializedObject.FindProperty("heightMultiplier");
-        heightCurve = serializedObject.FindProperty("heightCurve");
+        terrainData = serializedObject.FindProperty("terrainData");
 
         // Trees
         treeData = serializedObject.FindProperty("treeData");
@@ -57,7 +56,6 @@ public class TerraformerEditor : Editor {
 
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         EditorGUILayout.LabelField("<color=#d85d5d><b>General</b></color>", richTextStyle);
-        EditorGUILayout.PropertyField(terrain, new GUIContent("Object"));
         EditorGUILayout.PropertyField(terrainMaterial, new GUIContent("Material"));
         EditorGUILayout.PropertyField(size);
         EditorGUILayout.PropertyField(previewMode);
@@ -66,10 +64,9 @@ public class TerraformerEditor : Editor {
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         EditorGUILayout.LabelField("<color=lime><b>Terrain</b></color>", richTextStyle);
         EditorGUILayout.PropertyField(noiseDataLand, new GUIContent("Noise Data"));
-        EditorGUILayout.PropertyField(heightMultiplier);
-        EditorGUILayout.PropertyField(heightCurve);
+        EditorGUILayout.PropertyField(terrainData);
         if (GUILayout.Button("Generate terrain")) {
-            terraformer.GenerateLand();
+            terraformer.GenerateTerrain();
         }
 
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
@@ -86,7 +83,8 @@ public class TerraformerEditor : Editor {
         // Draw editor for data assets. We also want to autoupdate when values change.
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         EditorGUILayout.LabelField("<color=orange><b>Data</b></color>", richTextStyle);
-        DrawDataEditor(terraformer.noiseDataLand, terraformer.OnNoiseDataLandUpdated, ref terraformer.noiseDataLandFoldout, ref noiseDataLandEditor);
+        DrawDataEditor(terraformer.terrainNoiseData, terraformer.OnNoiseDataLandUpdated, ref terraformer.noiseDataLandFoldout, ref noiseDataLandEditor);
+        DrawDataEditor(terraformer.terrainData, terraformer.OnNoiseDataLandUpdated, ref terraformer.terrainDataFoldout, ref terrainDataEditor);
         DrawDataEditor(terraformer.noiseDataFertility, terraformer.OnNoiseDataFertilityUpdated, ref terraformer.noiseDataFertilityFoldout, ref noiseDataFertilityEditor);
         DrawDataEditor(terraformer.fertilityData, terraformer.OnFertilityUpdated, ref terraformer.fertilityDataFoldout, ref fertilityZonesEditor);
     }

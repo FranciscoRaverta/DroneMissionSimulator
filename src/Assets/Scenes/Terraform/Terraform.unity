@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -217,6 +217,64 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &947182913
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 947182915}
+  - component: {fileID: 947182914}
+  m_Layer: 0
+  m_Name: Terraformer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &947182914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947182913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ba7ca84248c6ab4ea091677df9b5a0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  preview: 0
+  terrainMaterial: {fileID: 2100000, guid: 38cad671c94bdca4db3b060006e18d91, type: 2}
+  size: 256
+  previewMode: 3
+  autoUpdate: 1
+  terrainNoiseData: {fileID: 11400000, guid: bad12e6ffaaef304fa08890480c8a5b5, type: 2}
+  terrainData: {fileID: 11400000, guid: 663f30a021a2dbf419ce9a4d9ba6fc0a, type: 2}
+  noiseDataFertility: {fileID: 11400000, guid: 519a410e2572e0c4baabd1e063d1c227, type: 2}
+  fertilityData: {fileID: 11400000, guid: a09e5aa9f16073248b0efac7b127445e, type: 2}
+  treeData: {fileID: 0}
+  noiseDataLandFoldout: 0
+  noiseDataFertilityFoldout: 0
+  fertilityDataFoldout: 0
+  terrainDataFoldout: 0
+--- !u!4 &947182915
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947182913}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1531784509
 GameObject:
   m_ObjectHideFlags: 0
