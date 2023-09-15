@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class PoissonDiskSampling {
-    public static List<Vector2> GeneratePoints(float radius, Vector2 domain, int k = 30) {
+    public static List<Vector2> GeneratePoints(int seed, float radius, Vector2 domain, int k = 30) {
+        System.Random prng = new System.Random(seed);
         // Step 0. Initialize data structures.
         float cellSize = radius / Mathf.Sqrt(2);
 
@@ -15,13 +16,13 @@ public static class PoissonDiskSampling {
         List<Vector2> active = new List<Vector2>();
 
         // Step 1. Select initial sample, x_0, randomly chosen uniformly from the domain.
-        Vector2 x0 = new Vector2(Random.Range(0, domain.x), Random.Range(0, domain.y));
+        Vector2 x0 = new Vector2(prng.Next(0, (int)domain.x), prng.Next(0, (int)domain.y));
         grid[(int)(x0.x / cellSize), (int)(x0.y / cellSize)] = x0;
         points.Add(x0);
         active.Add(x0);
 
         while (active.Count > 0) {
-            int index = Random.Range(0, active.Count);
+            int index = prng.Next(0, active.Count);
             Vector2 center = active[index];
             bool found = false;
 
@@ -29,7 +30,7 @@ public static class PoissonDiskSampling {
                 // Step 2: Generate up to k points chosen uniformly from the spherical annulus
                 // between radius r and 2r around x_i. In this case x_i is the spawn center.
                 // Find a suitable candidate or discard the active point as a suitable generator.
-                Vector2 xi = GetRandomPointInAnnulus(center, radius);
+                Vector2 xi = GetRandomPointInAnnulus(prng, center, radius);
                 if (IsValidPoint(xi, domain, cellSize, radius, grid)) {
                     points.Add(xi);
                     active.Add(xi);
@@ -47,10 +48,10 @@ public static class PoissonDiskSampling {
         return points;
     }
 
-    static Vector2 GetRandomPointInAnnulus(Vector2 center, float radius) {
-        float angle = Random.value * Mathf.PI * 2;
+    static Vector2 GetRandomPointInAnnulus(System.Random prng, Vector2 center, float radius) {
+        float angle = (float)prng.NextDouble() * Mathf.PI * 2;
         Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-        Vector2 point = center + dir * Random.Range(radius, 2 * radius);
+        Vector2 point = center + dir * Mathf.Lerp(radius, 2*radius, (float)prng.NextDouble());
         return point;
     }
 

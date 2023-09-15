@@ -83,14 +83,18 @@ public class TerraformerEditor : Editor {
         // Draw editor for data assets. We also want to autoupdate when values change.
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         EditorGUILayout.LabelField("<color=orange><b>Data</b></color>", richTextStyle);
-        DrawDataEditor(terraformer.terrainNoiseData, terraformer.OnNoiseDataLandUpdated, ref terraformer.noiseDataLandFoldout, ref noiseDataLandEditor);
-        DrawDataEditor(terraformer.terrainData, terraformer.OnNoiseDataLandUpdated, ref terraformer.terrainDataFoldout, ref terrainDataEditor);
-        DrawDataEditor(terraformer.noiseDataFertility, terraformer.OnNoiseDataFertilityUpdated, ref terraformer.noiseDataFertilityFoldout, ref noiseDataFertilityEditor);
-        DrawDataEditor(terraformer.fertilityData, terraformer.OnFertilityUpdated, ref terraformer.fertilityDataFoldout, ref fertilityZonesEditor);
+        DrawDataEditor(terraformer.terrainNoiseData, "Terrain noise data", terraformer.OnNoiseDataLandUpdated, ref terraformer.noiseDataLandFoldout, ref noiseDataLandEditor);
+        DrawDataEditor(terraformer.terrainData, "Terrain height data", terraformer.OnNoiseDataLandUpdated, ref terraformer.terrainDataFoldout, ref terrainDataEditor);
+        DrawDataEditor(terraformer.noiseDataFertility, "Fertility noise data", terraformer.OnNoiseDataFertilityUpdated, ref terraformer.noiseDataFertilityFoldout, ref noiseDataFertilityEditor);
+        DrawDataEditor(terraformer.fertilityData, "Fertility vegetation data", terraformer.OnFertilityUpdated, ref terraformer.fertilityDataFoldout, ref fertilityZonesEditor);
     }
 
-    void DrawDataEditor(Object data, System.Action onDataUpdated, ref bool foldout, ref Editor editor) {
+    void DrawDataEditor(Object data, string name, System.Action onDataUpdated, ref bool foldout, ref Editor editor) {
         if (data != null) {
+            GUIStyle whiteBoldLabel = new GUIStyle(EditorStyles.label);
+            whiteBoldLabel.normal.textColor = Color.white;
+            whiteBoldLabel.fontStyle = FontStyle.Bold;
+            EditorGUILayout.LabelField(name, whiteBoldLabel);
             foldout = EditorGUILayout.InspectorTitlebar(foldout, data);
 
             using (var check = new EditorGUI.ChangeCheckScope()) {
@@ -104,6 +108,7 @@ public class TerraformerEditor : Editor {
                     }
                 }
             }
+            EditorGUILayout.Space(10);
         }
     }
 }

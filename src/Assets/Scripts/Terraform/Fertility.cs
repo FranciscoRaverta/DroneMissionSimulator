@@ -21,11 +21,9 @@ public class Fertility : MonoBehaviour
 
     public void SetData(NoiseData noiseData) {
         this.noiseData = noiseData;
-        this.probabilityMap = GenerateProbabilityMap();
     }
     public void SetData(FertilityData fertilityData) {
         this.fertilityData = fertilityData;
-        this.probabilityMap = GenerateProbabilityMap();
     }
 
     public Color[] GenerateFertilityColorMap() {
@@ -39,25 +37,41 @@ public class Fertility : MonoBehaviour
         return colorMap;
     }
 
+    public void UpdateFertility() {
+        this.probabilityMap = GenerateProbabilityMap();
+    }
+
     private float[,] GenerateProbabilityMap() {
         return Noise.GenerateNoiseMap(size, noiseData.seed, noiseData.scale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset);
     }
 
-    public void PlantTrees(CustomTerrain customTerrain, List<Vector2> points) {
-        probabilityMap = GenerateProbabilityMap();
+    public List<Vector2> SamplePointsInDomain() {
+        Vector2 domain = new Vector2(size, size);
+        return PoissonDiskSampling.GeneratePoints(fertilityData.seed, 10, domain);
+    }
+
+    public List<Vector3> GenerateTreeDistribution(List<Vector2> samplePoints, CustomTerrain customTerrain) {
+        return samplePoints.ConvertAll<Vector3>(point => customTerrain.SurfacePointToWorldPos(point));
+    }
+
+    public void PlantTrees(CustomTerrain customTerrain) {
+        UpdateFertility();
+
+        // Destroy previous trees
         GameObject treesContainer = customTerrain.TerrainObject.GetOrCreateGameObjectByName("Trees");
         treesContainer.transform.DestroyImmediateChildren();
         MeshFilter terrainMeshFilter = customTerrain.TerrainObject.GetComponent<MeshFilter>();
-        Mesh terrainMesh = terrainMeshFilter.sharedMesh;
-        Vector3 offset = new Vector3(-terrainMesh.bounds.size.x, 10, -terrainMesh.bounds.size.z) / 2;
-        Vector3[] vertices = terrainMesh.vertices;
+        List<Vector2> samplePoints = SamplePointsInDomain();
+        List<Vector3> spawnPoints = GenerateTreeDistribution(samplePoints, customTerrain);
 
-        foreach (Vector2 point in points) {
-            if (Random.value < fertilityData.fertility.Evaluate(probabilityMap[(int)point.x, (int)point.y])) {
-                Vector3 localPos = new Vector3(point.x, 0, point.y);
-                Vector3 worldPos = customTerrain.TerrainObject.transform.TransformPoint(localPos) + offset;
-                GameObject t = Instantiate(fertilityData.tree, worldPos, Quaternion.identity);
-                t.transform.RotateAround(t.transform.position, t.transform.up, Mathf.Rad2Deg * Random.value * 2 * Mathf.PI);
+        // Spawn new trees according to fertility map
+        System.Random prng = new System.Random(fertilityData.seed);
+        for (int i = 0; i < samplePoints.Count; i++) {
+            Vector2 samplePoint = samplePoints[i];
+            Vector3 spawnPoint = spawnPoints[i];
+            if ((float)prng.NextDouble() < fertilityData.fertility.Evaluate(probabilityMap[(int)samplePoint.x, (int)samplePoint.y])) {
+                GameObject t = Instantiate(fertilityData.tree, spawnPoint, Quaternion.identity);
+                t.transform.RotateAround(t.transform.position, t.transform.up, Mathf.Rad2Deg * (float)prng.NextDouble() * 2 * Mathf.PI);
                 t.transform.parent = treesContainer.transform;
             }
         }

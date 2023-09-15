@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2331bd60cea37c34a9fdd1bb07e65b17, type: 3}
   m_Name: Fertility noise
   m_EditorClassIdentifier: 
-  scale: 54.06
+  scale: 30
   octaves: 4
-  persistance: 0.698
-  lacunarity: 0.83
-  seed: 39
-  offset: {x: 5.66, y: 0}
+  persistance: 0.753
+  lacunarity: 0.3
+  seed: 100
+  offset: {x: 24, y: 0}

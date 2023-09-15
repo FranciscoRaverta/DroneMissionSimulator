@@ -5,5 +5,6 @@ using UnityEngine;
 [CreateAssetMenu()]
 public class FertilityData : ScriptableObject {
     public AnimationCurve fertility;
+    public int seed;
     public GameObject tree;
 }

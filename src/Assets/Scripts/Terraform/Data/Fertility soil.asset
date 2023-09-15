@@ -16,17 +16,17 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.029121399
-      value: 0.262146
-      inSlope: 1.9806328
-      outSlope: 1.9806328
+      time: -0.018985748
+      value: 0.9292221
+      inSlope: -1.4680927
+      outSlope: -1.4680927
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.38260004
-      value: 0.9622574
+      time: 0.2721264
+      value: 0.5018425
       inSlope: Infinity
       outSlope: Infinity
       tangentMode: 0
@@ -63,4 +63,5 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  seed: 12
   tree: {fileID: 40587555148541973, guid: 54c281735da429c9a8d7a35930b5d5d2, type: 3}

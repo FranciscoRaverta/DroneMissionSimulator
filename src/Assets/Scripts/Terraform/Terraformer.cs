@@ -35,23 +35,20 @@ public class Terraformer : MonoBehaviour
 
     public void Initialize() {
         if (!initialized) {
-            Debug.Log("Initializing");
             customTerrain = new CustomTerrain(size, terrainMaterial, terrainData, terrainNoiseData);
             fertility = new Fertility(size, noiseDataFertility, fertilityData);
+            customTerrain.UpdateTerrain();
+            fertility.UpdateFertility();
             initialized = true;
         }
-
     }
 
     public void GenerateTrees() {
         if (initialized) {
             fertility.SetData(noiseDataFertility);
             fertility.SetData(fertilityData);
-            Vector2 domain = new Vector2(size, size);
-            List<Vector2> spawnPoints = PoissonDiskSampling.GeneratePoints(10, domain);
-            fertility.PlantTrees(customTerrain, spawnPoints);
+            fertility.PlantTrees(customTerrain);
         }
-
     }
 
     public void GenerateTerrain() {
@@ -68,22 +65,26 @@ public class Terraformer : MonoBehaviour
         }
     }
     public void OnNoiseDataFertilityUpdated() {
-        if (autoUpdate && initialized) {
+        if (autoUpdate) {
             fertility.SetData(noiseDataFertility);
             fertility.SetData(fertilityData);
+            fertility.UpdateFertility();
             DrawPreview();
         }
     }
     public void OnFertilityUpdated() { 
-        if (autoUpdate && initialized) {
+        if (autoUpdate) {
             fertility.SetData(noiseDataFertility);
             fertility.SetData(fertilityData);
+            fertility.UpdateFertility();
             DrawPreview();
         }
     }
 
     public void DrawPreview() {
         if (initialized) {
+            customTerrain.UpdateTerrain();
+            fertility.UpdateFertility();
             if (previewMode == Preview.Height) {
                 terrainMaterial.mainTexture = TextureGenerator.TextureFromHeightMap(customTerrain.TerrainHeightMap);
             } else if (previewMode == Preview.Vegetation) {
