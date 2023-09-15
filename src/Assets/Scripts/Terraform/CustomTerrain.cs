@@ -81,7 +81,7 @@ public class CustomTerrain : MonoBehaviour {
         if (Physics.Raycast(projectPoint, Vector3.down, out hit, dst, mask)) {
             return hit.point;
         }
-
+        // hmmmm...
         return hit.point;
     }
 

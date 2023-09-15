@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class PoissonDiskSampling {
+    // Reference paper: https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
     public static List<Vector2> GeneratePoints(int seed, float radius, Vector2 domain, int k = 30) {
         System.Random prng = new System.Random(seed);
         // Step 0. Initialize data structures.
