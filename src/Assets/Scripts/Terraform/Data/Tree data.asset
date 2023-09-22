@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 717eebd6e5535654580fb6f7d84e0138, type: 3}
+  m_Name: Tree data
+  m_EditorClassIdentifier: 
+  trees:
+  - probability: 0.335
+    treeObject: {fileID: 40587555148541973, guid: 54c281735da429c9a8d7a35930b5d5d2,
+      type: 3}
+  - probability: 0.825
+    treeObject: {fileID: 5609241390880798925, guid: faa0c1ae43db8c5ada786c17f75b502e,
+      type: 3}
+  - probability: 1
+    treeObject: {fileID: 2142310559074770754, guid: 49fd07c1d2564d958b5b31270aea0533,
+      type: 3}
