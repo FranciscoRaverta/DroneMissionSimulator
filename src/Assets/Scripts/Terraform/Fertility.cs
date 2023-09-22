@@ -70,7 +70,8 @@ public class Fertility : MonoBehaviour
             Vector2 samplePoint = samplePoints[i];
             Vector3 spawnPoint = spawnPoints[i];
             if ((float)prng.NextDouble() < fertilityData.fertility.Evaluate(probabilityMap[(int)samplePoint.x, (int)samplePoint.y])) {
-                GameObject t = Instantiate(fertilityData.tree, spawnPoint, Quaternion.identity);
+                float treeSample = (float)prng.NextDouble();
+                GameObject t = Instantiate(fertilityData.treeData.Evaluate(treeSample), spawnPoint, Quaternion.identity);
                 t.transform.RotateAround(t.transform.position, t.transform.up, Mathf.Rad2Deg * (float)prng.NextDouble() * 2 * Mathf.PI);
                 t.transform.parent = treesContainer.transform;
             }

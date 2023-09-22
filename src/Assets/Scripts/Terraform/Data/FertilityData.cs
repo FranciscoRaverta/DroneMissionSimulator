@@ -6,5 +6,5 @@ using UnityEngine;
 public class FertilityData : ScriptableObject {
     public AnimationCurve fertility;
     public int seed;
-    public GameObject tree;
+    public TreeData treeData;
 }
