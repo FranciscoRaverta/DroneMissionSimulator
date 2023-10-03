@@ -2,6 +2,82 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public class VariablePoissonDiskSampling {
+    private float minRadius;
+    private float maxRadius;
+    private int sampleRejection;
+    private int sampleLimit;
+    private Vector2 sampleDomain;
+    private Texture2D sampleDistribution;
+    private SpatialGrid sampleGrid;
+    System.Random prng;
+
+    public VariablePoissonDiskSampling(float minRadius, float maxRadius, int sampleRejection, int sampleLimit, Vector2Int sampleDomain, Texture2D sampleDistribution, System.Random prng) {
+        this.minRadius = minRadius;
+        this.maxRadius = maxRadius;
+        this.sampleRejection = sampleRejection;
+        this.sampleLimit = sampleLimit;
+        this.sampleDomain = sampleDomain;
+        this.sampleDistribution = sampleDistribution;
+        this.prng = prng;
+        this.sampleGrid = new SpatialGrid(sampleDomain.x, sampleDomain.y, minRadius);
+    }
+
+    public List<Vector2> Generate() {
+        sampleGrid.Clear();
+
+        List<Vector2> points = new List<Vector2>();
+        List<Vector2> active = new List<Vector2>();
+
+        Vector2 x0 = GetRandomPointInDomain();
+        sampleGrid.AddItem(x0, GetRadiusAt(x0));
+        points.Add(x0);
+        active.Add(x0);
+
+        while (active.Count > 0) {
+            int index = prng.Next(0, active.Count);
+            Vector2 center = active[index];
+            bool found = false;
+
+            float radius = GetRadiusAt(center);
+            for (int i = 0; i < sampleRejection; i++) {
+                Vector2 xi = GetRandomPointInAnnulus(prng, center, radius);
+                if (sampleGrid.IsValidPos(xi, radius)) {
+                    points.Add(xi);
+                    active.Add(xi);
+                    sampleGrid.AddItem(xi, radius);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                active.RemoveAt(index);
+            }
+        }
+
+        return points;
+
+    }
+
+    Vector2 GetRandomPointInAnnulus(System.Random prng, Vector2 pos, float radius) {
+        float angle = (float)prng.NextDouble() * Mathf.PI * 2;
+        Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+        Vector2 point = pos + dir * radius;
+        return point;
+    }
+
+    Vector2 GetRandomPointInDomain() {
+        return new Vector2(prng.Next(0, (int)sampleDomain.x), prng.Next(0, (int)sampleDomain.y));
+    }
+
+    float GetRadiusAt(Vector2 pos) {
+        return Mathf.Lerp(minRadius, maxRadius, sampleDistribution.GetPixelBilinear(pos.x / sampleDistribution.width, pos.y / sampleDistribution.height).r);
+    }
+}
+
+
 public static class PoissonDiskSampling {
     // Reference paper: https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
     public static List<Vector2> GeneratePoints(int seed, float radius, Vector2 domain, int k = 30) {

@@ -71,7 +71,7 @@ public class NoiseEditor : EditorWindow {
     private void DrawTexture() {
         float[,] data = Noise.GenerateNoiseMap(256, _seed.value, _scale.value, _octaves.value, _persistance.value, _lacunarity.value, _offset.value);
         Texture2D tex = TextureGenerator.TextureFromHeightMap(data);
-
+        tex.filterMode = FilterMode.Bilinear;
         _texture.image = tex;
         _texture.scaleMode = ScaleMode.StretchToFill;
     }
@@ -104,6 +104,7 @@ public class NoiseEditor : EditorWindow {
             _noiseData.persistance = _persistance.value;
             _noiseData.lacunarity = _lacunarity.value;
             _noiseData.offset = _offset.value;
+            EditorUtility.SetDirty(_noiseData);
         }
     }
 }
