@@ -48,6 +48,7 @@ public class Terraformer : MonoBehaviour
             fertility.SetData(noiseDataFertility);
             fertility.SetData(fertilityData);
             fertility.PlantTrees(customTerrain);
+            fertility.PlantGrass(customTerrain);
         }
     }
 

@@ -4,7 +4,8 @@ using UnityEngine;
 
 [CreateAssetMenu()]
 public class TreeData : ScriptableObject { 
-    [SerializeField] Tree[] trees;
+    public Tree[] trees;
+    public GameObject grass;
 
     public GameObject Evaluate(float t) {
         foreach (Tree tree in trees) {

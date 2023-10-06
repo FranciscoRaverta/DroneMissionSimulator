@@ -36,9 +36,9 @@ public class SpatialGrid {
 
                 foreach (int idx in points) {
                     SpatialItem item = items[idx];
-                    float maxRadiusBetweenPoints = Mathf.Max(item.radius, radius);
+                    float minRadiusBetweenPoints = Mathf.Min(item.radius, radius);
 
-                    if ((pos - item.pos).sqrMagnitude < (maxRadiusBetweenPoints * maxRadiusBetweenPoints)) {
+                    if ((pos - item.pos).sqrMagnitude < (minRadiusBetweenPoints * minRadiusBetweenPoints)) {
                         return false;
                     }
                 }
@@ -68,7 +68,6 @@ public class SpatialGrid {
         int endX = Mathf.Min(cell.x + neighbourhood, gridWidth - 1);
         int startY = Mathf.Max(0, cell.y - neighbourhood);
         int endY = Mathf.Min(cell.y + neighbourhood, gridHeight - 1);
-
         return (rowSpan: new Vector2Int(startX, endX), colSpan: new Vector2Int(startY, endY));
     }
 

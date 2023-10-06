@@ -13,7 +13,7 @@ public class VariablePoissonDiskSampling {
     private SpatialGrid sampleGrid;
     System.Random prng;
 
-    public VariablePoissonDiskSampling(float minRadius, float maxRadius, int sampleRejection, int sampleLimit, Vector2Int sampleDomain, Texture2D sampleDistribution, System.Random prng) {
+    public VariablePoissonDiskSampling(float minRadius, float maxRadius, Vector2Int sampleDomain, Texture2D sampleDistribution, System.Random prng, int sampleRejection = 30, int sampleLimit = 10000) {
         this.minRadius = minRadius;
         this.maxRadius = maxRadius;
         this.sampleRejection = sampleRejection;
@@ -25,8 +25,6 @@ public class VariablePoissonDiskSampling {
     }
 
     public List<Vector2> Generate() {
-        sampleGrid.Clear();
-
         List<Vector2> points = new List<Vector2>();
         List<Vector2> active = new List<Vector2>();
 
@@ -36,6 +34,8 @@ public class VariablePoissonDiskSampling {
         active.Add(x0);
 
         while (active.Count > 0) {
+            if (points.Count > sampleLimit) break;
+
             int index = prng.Next(0, active.Count);
             Vector2 center = active[index];
             bool found = false;
@@ -73,7 +73,10 @@ public class VariablePoissonDiskSampling {
     }
 
     float GetRadiusAt(Vector2 pos) {
-        return Mathf.Lerp(minRadius, maxRadius, sampleDistribution.GetPixelBilinear(pos.x / sampleDistribution.width, pos.y / sampleDistribution.height).r);
+        return minRadius + Mathf.Lerp(
+            minRadius, maxRadius,
+            sampleDistribution.GetPixelBilinear(pos.x / sampleDistribution.width, pos.y / sampleDistribution.height).r
+        );
     }
 }
 
